@@ -96,7 +96,7 @@ function draw() {
   ctx.beginPath();
   ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
   ctx.fillStyle = 'red';
-  ctx.shadowColor = '#00ff88';
+  ctx.shadowColor = 'red';
   ctx.shadowBlur = 20;
   ctx.fill();
 }
