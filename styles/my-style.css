@@ -26,4 +26,22 @@ h1 {
   text-shadow: 0 0 0.5em #ff1144;
 }
 
+img {
+  background: rgba(0, 0, 0, 0);
+  opacity: 100%;
+  z-index: 2;
+}
+
+#restartbtn {
+  background: rgba(0, 0, 0, 0);
+  border: rgb(255, 0, 0);
+  align-items: center;
+  width: 100%;
+  z-index: 20;
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  pointer-events: auto;
+}
+
 /*# sourceMappingURL=my-style.css.map */
