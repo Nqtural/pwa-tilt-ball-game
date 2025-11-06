@@ -9,10 +9,10 @@ let wakeLock = null;
 async function requestWakeLock() {
   try {
     wakeLock = await navigator.wakeLock.request('screen');
-    console.log('✅ Screen Wake Lock active');
+    console.log('Screen Wake Lock active');
 
     wakeLock.addEventListener('release', () => {
-      console.log('❌ Wake Lock was released');
+      console.log('Wake Lock was released');
     });
   } catch (err) {
     console.error(`${err.name}, ${err.message}`);
@@ -89,6 +89,8 @@ let a_coin = 0;
 
 let max_coins = 10;
 
+// im bind so here is spawing coin here so stop looking for it ut looking at it
+
 function spawncoin() {
   if (coins.length >= max_coins) {
     return
@@ -98,14 +100,20 @@ function spawncoin() {
     cx: Math.random() * (canvas.width - 20),
     cy: Math.random() * (canvas.height - 20),
     c_size: 15,
-    c_life_time: 0
+    c_life_time: 0,
+    color: 'gold',
+    shadow_color: 'gold'
   };
+  const min_d = 50;
 
-  coins.push(coin);
+  let distance = touching(ball, coin, "yes")
+  if (distance > min_d) {
+    coins.push(coin);
+  }
 }
 
 // coin spawn timer
-setInterval(spawncoin, 1000);
+setInterval(spawncoin, 500);
 
 
 
@@ -131,12 +139,15 @@ function player_goes_pouf() {
 
 // checking for stuff touching
 
-function touching(player, coin) {
+function touching(player, coin, yes_or_no) {
   let dx = (player.x ) - (coin.cx);
   let dy = (player.y ) - (coin.cy);
   let distance = Math.sqrt(dx*dx + dy*dy);
-  return distance < player.radius + coin.c_size;
-
+  if (yes_or_no == "no") {
+    return distance < player.radius + coin.c_size;
+  } else if (yes_or_no == "yes") {
+    return distance;
+  }
 }
 
 // creating the particles array for the good looking pouf when player is bad, yes very bad.
@@ -197,10 +208,10 @@ function update() {
 
   //pc support
 
-  if (keys["ArrowLeft"])  ball.vx -= 1;
-  if (keys["ArrowRight"]) ball.vx += 1;
-  if (keys["ArrowUp"])    ball.vy -= 1;
-  if (keys["ArrowDown"])  ball.vy += 1;
+  if (keys["ArrowLeft"])  ball.vx -= 1.25;
+  if (keys["ArrowRight"]) ball.vx += 1.25;
+  if (keys["ArrowUp"])    ball.vy -= 1.25;
+  if (keys["ArrowDown"])  ball.vy += 1.25;
 
 
   const maxSpeed = 1000;
@@ -212,11 +223,20 @@ function update() {
   // checking if player is bad at the game
   
   for (let i = 0; i < coins.length; i++) {
-    if(touching(ball, coins[i])) {
+    if(touching(ball, coins[i], "no")) {
       player_goes_pouf();
       coins.splice(i, 1);
       break;
     }
+  }
+
+  for (let i = 0; i < coins.length; i++) {
+    if (coins[i].c_life_time == 500) {
+      coins.splice(i, 1);
+    }else {
+      coins[i].c_life_time++
+    }
+    console.log(coins[0].c_life_time)
   }
 
 }
@@ -233,7 +253,7 @@ function draw() {
     ctx.shadowBlur = 20;
     ctx.fill();
   }
-
+  
   ctx.shadowColor = 'rgb(0, 0, 0, 0)'
 
   a_coin = 0;
@@ -241,16 +261,20 @@ function draw() {
  for (let coin of coins) {
   
   ctx.fillStyle = 'gold';
+  ctx.shadowColor = coin.shadow_color
   ctx.beginPath();
   ctx.arc(coin.cx, coin.cy, coin.c_size, 0, Math.PI * 2);
   ctx.fill();
   a_coin += 1;
- }
+  }
+
+  ctx.shadowColor = 'rgb(0, 0, 0, 0)'
 
   // making the good looking poufing for the bad player
 
   for (let p of particles) {
     ctx.fillStyle = p.color;
+    ctx.shadowColor = ball.shadow_color
     ctx.beginPath();
     ctx.arc(p.x, p.y, p.radius, 0, Math.PI*2);
     ctx.fill();
