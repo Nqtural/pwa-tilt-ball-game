@@ -275,7 +275,7 @@ function update() {
     }
   }
   if (keys[" "]) restartGame();
-  console.log(game_paused)
+  // console.log(game_paused)
 }
 
 function draw() {
