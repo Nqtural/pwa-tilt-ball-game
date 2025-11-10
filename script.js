@@ -98,15 +98,15 @@ function spawncoin() {
   }
 
   const coin = {
-    cx: Math.random() * (canvas.width - 20),
-    cy: Math.random() * (canvas.height - 20),
-    c_size: 15,
-    c_life_time: 0,
+    x: Math.random() * (canvas.width - 20),
+    y: Math.random() * (canvas.height - 20),
+    size: 15,
+    life_time: 0,
     color: 'gold',
     shadow_color: 'gold',
-    c_dx: 0,
-    c_dy: 0,
-    c_speed: Math.random() * (0.02 - 0.01) + 0.01
+    dx: 0,
+    dy: 0,
+    speed: Math.random() * (0.02 - 0.01) + 0.01
   };
   const min_d = 200;
 
@@ -116,6 +116,42 @@ function spawncoin() {
   }
 }
 
+
+// green balls multiplier
+
+let multis = [];
+
+let a_multi = 0;
+
+let max_multis = 3;
+
+function spawnmulti() {
+  if (multis.length >= max_multis) {
+    return
+  }
+  console.log("hello!")
+
+  const green = {
+    x: Math.random() * (canvas.width - 20),
+    y: Math.random() * (canvas.height - 20),
+    size: 15,
+    life_time: 0,
+    color: 'green',
+    shadow_color: 'green',
+    dx: 0,
+    dy: 0,
+    speed: Math.random() * (0.02 - 0.01) + 0.01
+  };
+  const min_d = 200;
+
+  let distance = touching(ball, green, "yes")
+  if (distance > min_d) {
+    multis.push(green);
+  }
+  console.log(multis)
+}
+
+
 // score multipliur
 
 let score_multiplier = 1;
@@ -124,6 +160,8 @@ let score = 0;
 
 // coin spawn timer and other timeers 
 setInterval(spawncoin, 400);
+
+setInterval(spawnmulti, 400);
 
 
 
@@ -152,11 +190,11 @@ function player_goes_pouf() {
 // checking for stuff touching
 
 function touching(player, coin, yes_or_no) {
-  let dx = (player.x ) - (coin.cx);
-  let dy = (player.y ) - (coin.cy);
+  let dx = (player.x ) - (coin.x);
+  let dy = (player.y ) - (coin.y);
   let distance = Math.sqrt(dx*dx + dy*dy);
   if (yes_or_no == "no") {
-    return distance < player.radius + coin.c_size;
+    return distance < player.radius + coin.size;
   } else if (yes_or_no == "yes") {
     return distance;
   }
@@ -231,11 +269,11 @@ function update() {
     // nqtural's stupid good idea
     // if (coins.length >= 10) {}
       for (let i = 0; i < coins.length; i++) {
-        coins[i].c_dx = ball.x - coins[i].cx;
-        coins[i].c_dy = ball.y - coins[i].cy;
+        coins[i].dx = ball.x - coins[i].x;
+        coins[i].dy = ball.y - coins[i].y;
 
-        coins[i].cx += coins[i].c_dx * (coins[i].c_speed);
-        coins[i].cy += coins[i].c_dy * (coins[i].c_speed);
+        coins[i].x += coins[i].dx * (coins[i].speed);
+        coins[i].y += coins[i].dy * (coins[i].speed);
       }
 
 
@@ -271,15 +309,15 @@ function update() {
     // cheching for if coin is too old to live and need to be replaced
 
     for (let i = 0; i < coins.length; i++) {
-      if (coins[i].c_life_time == 250) {
+      if (coins[i].life_time == 250) {
         coins.splice(i, 1);
       } else {
-        coins[i].c_life_time++
+        coins[i].life_time++
       }
-      if (coins[i].c_life_time >= 245) {
-        coins[i].color = `lch(from gold l c h / ${100 - ((coins[i].c_life_time - 245) * 20)}%)`;
+      if (coins[i].life_time >= 245) {
+        coins[i].color = `lch(from gold l c h / ${100 - ((coins[i].life_time - 245) * 20)}%)`;
       }
-      // console.log(coins[0].c_life_time)
+      // console.log(coins[0].life_time)
     }
     score ++
     score_display.textContent = score;
@@ -307,13 +345,23 @@ function draw() {
 
  for (let coin of coins) {
   
-  ctx.fillStyle = coin.color;
-  ctx.shadowColor = coin.shadow_color
-  ctx.beginPath();
-  ctx.arc(coin.cx, coin.cy, coin.c_size, 0, Math.PI * 2);
-  ctx.fill();
-  a_coin += 1;
+    ctx.fillStyle = coin.color;
+    ctx.shadowColor = coin.shadow_color
+    ctx.beginPath();
+    ctx.arc(coin.x, coin.y, coin.size, 0, Math.PI * 2);
+    ctx.fill();
+    a_coin += 1;
   }
+
+  for (let green of multis) {
+    ctx.fillStyle = green.color;
+    ctx.shadowColor = green.shadow_color
+    ctx.beginPath();
+    ctx.arc(green.x, green.y, green.size, 0, Math.PI * 2);
+    ctx.fill();
+    a_multi += 1;
+  }
+
 
   ctx.shadowColor = 'rgb(0, 0, 0, 0)'
 
