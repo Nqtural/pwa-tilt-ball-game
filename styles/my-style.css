@@ -47,11 +47,13 @@ button {
   transform: translate(-50%, -50%) scale(0.5);
   opacity: 0;
   transition: opacity 0.3s ease, transform 0.3s ease;
+  pointer-events: none;
 }
 
 button.visible {
   transform: translate(-50%, -50%) scale(1);
   opacity: 1;
+  pointer-events: all;
 }
 
 /*# sourceMappingURL=my-style.css.map */
