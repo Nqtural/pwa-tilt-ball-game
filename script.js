@@ -1,6 +1,6 @@
 // service worker
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('sw.js');
+  navigator.serviceWorker.register('/pwa-tilt-ball-game/service-worker.js');
 }
 
 let lastTime = performance.now();
