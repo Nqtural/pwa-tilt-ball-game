@@ -353,7 +353,7 @@ function update(dt) {
 
     for (let i = 0; i < multis.length; i++) {
       if(touching(ball, multis[i], "no")) {
-        score_multiplier -= 0.05;
+        score_multiplier *= 0.9;
         multis.splice(i, 1);
         break;
       }
@@ -390,7 +390,8 @@ function update(dt) {
       score_interval = 0;
     } else {
       score_interval += dt;
-      console.log(score_interval)
+      // console.log(score_interval)
+      console.log("score multiplier: ",score_multiplier)
     }
     score_display.textContent = score;
   }
