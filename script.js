@@ -50,6 +50,8 @@ function resize() {
 window.addEventListener('resize', resize);
 resize();
 
+
+
 // tilt reader
 window.addEventListener('deviceorientation', (event) => {
   beta = event.beta;   // front/back tilt (-180 to 180)
@@ -102,6 +104,9 @@ function getMaxCoins() {
 function spawncoin() {
 
   const max = getMaxCoins();
+  if (game_paused == true) {
+    return
+  }
 
   if (coins.length >= max) {
     return
@@ -164,6 +169,11 @@ let a_multi = 0;
 let max_multis = 3;
 
 function spawnmulti() {
+
+  if (game_paused == true) {
+    return
+  }
+
   if (multis.length >= max_multis) {
     return
   }
@@ -269,10 +279,16 @@ function restartGame() {
   game_paused = false;
   score = 0;
   score_multiplier = 1;
+  playBtnImg.classList.add('hidden');
+  restartBtnImg.classList.remove('hidden');
   // console.log("restarting game!")
 }
 
 const restartbtn = document.getElementById("restartbtn");
+
+const playBtnImg = document.getElementById("playBtnImg");
+
+const restartBtnImg = document.getElementById("restartBtnImg");
 // console.log(restartbtn)
 
 restartbtn.addEventListener("click", restartGame)
@@ -281,10 +297,10 @@ restartbtn.addEventListener("touchstart", restartGame)
 
 
 // hides restart btn
-restartbtn.classList.remove("visible");
+restartbtn.classList.add("visible");
 
 // game paused code
-let game_paused = false
+let game_paused = true
 
 // score declaration
 const score_display = document.getElementById("scoreDisplay");
